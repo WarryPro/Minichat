@@ -1,4 +1,4 @@
-<?php 
+<?php
     include('dbb-connexion.php');
 ?>
 
@@ -18,34 +18,37 @@
     <div class="container">
         <div class="container__messages">
             <div class="container__pseudo_message">
-                <div class="container__pseudo">
-                    <p class="pseudo"></p>
-                </div>
-                <div class="container__message">
-                    <p class="pseudo">
-                        <?php 
+                <?php 
+                    // Récupération des 10 derniers messages 
+                    $reponse = $bdd->query('SELECT pseudo, message, date FROM minichat ORDER BY ID ASC LIMIT 0, 10');
 
-                            // Récupération des 10 derniers messages 
-                            $reponse = $bdd->query('SELECT pseudo, message FROM minichat ORDER BY ID ASC LIMIT 0, 10');
+                    // Affichage de chaque message (tous les données sont protégées par htmlspecialcharts)
+                    while ($donnees = $reponse->fetch()) {
+                        echo '<div class="container__pseudo"><p class="pseudo">' 
+                        . htmlspecialchars($donnees['pseudo']) . '</p></div>';
 
-                            // Affichage de chaque message (tous les données sont protégées par htmlspecialcharts)
-                            while ($donnees = $reponse->fetch()) {
-                                echo '<p><strong>' . htmlspecialchars($donnees['pseudo']) . '</strong> : '
-                                . htmlspecialchars($donnees['message']) . '</p>';
-                            }
-                            $reponse->closeCursor();
-                        ?>                    
-                    </p>
-                </div>
-                <div class="container__date__heure">
-                    <p class="date__heure"></p>
-                </div>
+                        echo '<div class="container__message"><p class="message">' 
+                        . htmlspecialchars($donnees['message']) . '</p></div>';
+
+                        echo '<div class="container__date__heure"><p class="date__heure">' 
+                        . htmlspecialchars($donnees['date']) . '</p></div>';
+                    }
+                    $reponse->closeCursor();
+                ?>                    
             </div>
         </div>
+
         <div class="container__form">
             <form action="messages.php" method="POST">
                 <label for="pseudo">Pseudo</label>
-                <input type="text" id="pseudo" name="pseudo">
+                <!-- input pseudo avec la cookie -->
+                <input type="text" id="pseudo" name="pseudo" value="<?php if (isset($_COOKIE['pseudo'])){
+                    echo $_COOKIE['pseudo'];
+                }
+                else
+                    {
+                    echo 'Erreur sur le formulaire';
+                } ?>">
 
                 <label for="message">Message</label>
                 <input type="text" id="message" name="message">
