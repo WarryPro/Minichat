@@ -7,5 +7,3 @@ try {
 catch(Exception $e){
     di('Erreur : ' .$e->getMessage());
 }
-
-?>
